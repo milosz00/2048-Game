@@ -11,7 +11,7 @@ public class MoveScene extends Scene {
     Board board;
     Tile[][] grid;
 
-    //TODO after click arrows generate new tile
+    //TODO add gameOver method and improve adding new Tile(after 70% filling add by "hand")
 
     public MoveScene(Board root) {
         super(root);
@@ -21,7 +21,7 @@ public class MoveScene extends Scene {
     }
 
     private void keyPressed(KeyEvent event) {
-        System.out.println("hahs");
+
         KeyCode pressedKey = event.getCode();
 
         switch(pressedKey) {
@@ -39,6 +39,7 @@ public class MoveScene extends Scene {
                 break;
         }
 
+        this.board.generateTile();
         printArray();
     }
 

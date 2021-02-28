@@ -18,126 +18,8 @@ public class Board extends Pane {
         this.setPrefSize(width,height);
         prepareGame();
 
-        this.setFocusTraversable(true); // set up possibility  expectations to key pressed or sth else
-        //this.setOnKeyPressed(event -> keyPressed(event)); // we set up action on key pressed
     }
 
-//    private void keyPressed(KeyEvent event) {
-//        System.out.println("hahs");
-//        KeyCode pressedKey = event.getCode();
-//
-//        switch(pressedKey) {
-//            case UP:
-//                moveTilesUp();
-//                break;
-//            case DOWN:
-//                moveTilesDown();
-//                break;
-//            case RIGHT:
-//                moveTilesRight();
-//                break;
-//            case LEFT:
-//                moveTilesLeft();
-//                break;
-//        }
-//
-//    }
-//
-//    private void moveTilesLeft() {
-//
-//        for(int i = 0; i < 4; i++) {
-//            for(int j = 1; j < 4; j++) {
-//
-//                if( grid[i][j].getValue() == grid[i][j-1].getValue() ) {
-//                    int value = grid[i][j].getValue();
-//                    grid[i][j-1].setValue(value * 2);
-//                    grid[i][j].setValue(0);
-//
-//                    int index = j;
-//                    while( index < 3 ) {
-//                        value = grid[i][index+1].getValue();
-//                        grid[i][index].setValue(value);
-//                        grid[i][index+1].setValue(0);
-//                        index++;
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//    }
-//
-//    private void moveTilesRight() {
-//
-//        for(int i = 3; i >= 0; i--) {
-//            for(int j = 2; j >= 0; j--) {
-//
-//                if( grid[i][j].getValue() == grid[i][j+1].getValue() ) {
-//                    int value = grid[i][j].getValue();
-//                    grid[i][j+1].setValue(value * 2);
-//                    grid[i][j].setValue(0);
-//
-//                    int index = j;
-//                    while( index > 0 ) {
-//                        value = grid[i][index-1].getValue();
-//                        grid[i][index].setValue(value);
-//                        grid[i][index-1].setValue(0);
-//                        index--;
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//    }
-//
-//    private void moveTilesDown() {
-//
-//        for(int i = 3; i >= 0; i--) {
-//            for(int j = 2; j >= 0; j--) {
-//
-//                if( grid[j][i].getValue() == grid[j+1][i].getValue() ) {
-//                    int value = grid[j][i].getValue();
-//                    grid[j+1][i].setValue(value * 2);
-//                    grid[j][i].setValue(0);
-//
-//                    int index = j;
-//                    while( index > 0 ) {
-//                        value = grid[index-1][i].getValue();
-//                        grid[index][i].setValue(value);
-//                        grid[index-1][i].setValue(0);
-//                        index--;
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//    }
-//
-//    private void moveTilesUp() {
-//
-//        for(int i = 0; i < 4; i++) {
-//            for(int j = 1; j < 4; j++) {
-//
-//                if( grid[j][i].getValue() == grid[j-1][i].getValue() ) {
-//                    int value = grid[j][i].getValue();
-//                    grid[j-1][i].setValue(value * 2);
-//                    grid[j][i].setValue(0);
-//
-//                    int index = j;
-//                    while( index < 3 ) {
-//                        value = grid[index+1][i].getValue();
-//                        grid[index][i].setValue(value);
-//                        grid[index+1][i].setValue(0);
-//                        index++;
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//    }
 
 
     // we choose random two position to start a game, and initialize grid
@@ -160,6 +42,55 @@ public class Board extends Pane {
                 }
             }
         }
+    }
+
+    public void generateTile() {
+        Random random = new Random();
+        int x = random.nextInt(4), y = random.nextInt(4);
+
+        while(grid[x][y].getValue() != 0) {
+            x = random.nextInt(4);
+            y = random.nextInt(4);
+        }
+
+        grid[x][y].setValue(2);
+
+        //TODO set different value, not only two
+    }
+
+    private boolean gameOver() {
+
+        boolean canMove = false;
+
+        for(int x = 0; x < 4; x++) {
+            for(int y = 0; y < 4; y++) {
+
+                if(grid[x][y].getValue() != 0 || canMove(x,y))
+                    return false;
+
+            }
+        }
+        return true;
+    }
+
+    private boolean canMove(int x, int y) {
+        int[] points = new int[]{
+                0,-1,
+                1,0,
+                0,1,
+                -1,0
+        };
+
+        for(int i = 0;i < points.length; i++) {
+            int newX = points[i] + x;
+            int newY= points[++i] + y;
+
+            if(newX >= 0 && newX < 4 && newY >= 0 && newY < 4) {
+                if(grid[x][y].getValue() == grid[newX][newY].getValue())
+                    return true;
+            }
+        }
+        return false;
     }
 
     public Tile[][] getGrid() {
