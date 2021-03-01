@@ -1,7 +1,6 @@
 package Game;
 
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+
 import javafx.scene.layout.Pane;
 
 import java.util.Random;
@@ -10,7 +9,6 @@ public class Board extends Pane {
 
     private final int width = 400;
     private final int height = 400;
-    private final int TILE_SIZE = 100;
 
     private final Tile[][] grid = new Tile[4][4];
 
@@ -48,19 +46,33 @@ public class Board extends Pane {
         Random random = new Random();
         int x = random.nextInt(4), y = random.nextInt(4);
 
-        while(grid[x][y].getValue() != 0) {
-            x = random.nextInt(4);
-            y = random.nextInt(4);
+        int tilesNumber = howTilesInGrid();
+
+        if (tilesNumber <= 11) {
+
+            while (grid[x][y].getValue() != 0) {
+                x = random.nextInt(4);
+                y = random.nextInt(4);
+            }
+
+            grid[x][y].setValue(2);
+
+        } else {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (grid[i][j].getValue() == 0) {
+                        grid[i][j].setValue(2);
+                        break;
+                    }
+                }
+            }
+
+            //TODO set different value, not only two
         }
-
-        grid[x][y].setValue(2);
-
-        //TODO set different value, not only two
     }
 
-    private boolean gameOver() {
+    public boolean gameOver() {
 
-        boolean canMove = false;
 
         for(int x = 0; x < 4; x++) {
             for(int y = 0; y < 4; y++) {
@@ -91,6 +103,19 @@ public class Board extends Pane {
             }
         }
         return false;
+    }
+
+    private int howTilesInGrid() {
+
+        int count = 0;
+
+        for(int i = 0;i < 4; i++) {
+            for(int j = 0; j < 4; j++) {
+                if(grid[i][j].getValue() != 0)
+                    count++;
+            }
+        }
+        return count;
     }
 
     public Tile[][] getGrid() {

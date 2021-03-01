@@ -6,20 +6,24 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+
+
 public class Tile extends StackPane {
 
     private int x,y;
     private int value;
     private final int TILE_SIZE = 100;
 
-    Text textValue = new Text();
-    Rectangle border = new Rectangle(TILE_SIZE - 2, TILE_SIZE - 2);
+    Text textValue;
+    Rectangle border;
 
     public Tile(int x, int y, int value) {
         this.x = x;
         this.y = y;
         this.value = value;
 
+        textValue = new Text();
+        border = new Rectangle(TILE_SIZE - 2, TILE_SIZE - 2);
 
         border.setStroke(Color.ROSYBROWN);
         if(value != 0)
@@ -50,4 +54,15 @@ public class Tile extends StackPane {
         else
             textValue.setText("");
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tile tile = (Tile) o;
+        return value == tile.value;
+    }
+
+
 }

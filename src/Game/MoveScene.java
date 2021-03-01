@@ -1,17 +1,16 @@
 package Game;
 
-import javafx.scene.Parent;
+
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Pane;
+
 
 public class MoveScene extends Scene {
 
     Board board;
     Tile[][] grid;
 
-    //TODO add gameOver method and improve adding new Tile(after 70% filling add by "hand")
 
     public MoveScene(Board root) {
         super(root);
@@ -22,29 +21,40 @@ public class MoveScene extends Scene {
 
     private void keyPressed(KeyEvent event) {
 
+        if(this.board.gameOver()) {
+            System.out.println("Game Over");
+            return;
+        }
+
         KeyCode pressedKey = event.getCode();
+        boolean change = false;
 
         switch(pressedKey) {
             case UP:
-                moveTilesUp();
+                if(moveTilesUp())
+                    change = true;
                 break;
             case DOWN:
-                moveTilesDown();
+                if(moveTilesDown())
+                    change = true;
                 break;
             case RIGHT:
-                moveTilesRight();
+                if(moveTilesRight())
+                    change = true;
                 break;
             case LEFT:
-                moveTilesLeft();
+                if(moveTilesLeft())
+                    change = true;
                 break;
         }
 
-        this.board.generateTile();
-        printArray();
+        if(change)
+            this.board.generateTile();
+        printArray(grid);
     }
 
     // tmp function
-    private void printArray() {
+    private void printArray(Tile[][] grid) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 System.out.print(grid[i][j] + "   ");
@@ -53,9 +63,10 @@ public class MoveScene extends Scene {
         }
     }
 
-    private void moveTilesLeft() {
+    private boolean moveTilesLeft() {
 
-        System.out.println("Left");
+
+        Tile[][] gridBeforeChanges = createCopyOfTileArray(grid);
         for(int i = 0; i < 4; i++) {
             for(int j = 0; j < 4; j++) {
 
@@ -94,10 +105,15 @@ public class MoveScene extends Scene {
             }
         }
 
+        if(isGridsDifferent(gridBeforeChanges))
+            return true;
+
+        return false;
     }
 
-    private void moveTilesRight() {
-        System.out.println("Right");
+    private boolean moveTilesRight() {
+
+        Tile[][] gridBeforeChanges = createCopyOfTileArray(grid);
 
         for(int i = 3; i >= 0; i--) {
             for(int j = 3; j >= 0; j--) {
@@ -137,11 +153,16 @@ public class MoveScene extends Scene {
             }
         }
 
+        if(isGridsDifferent(gridBeforeChanges))
+            return true;
+
+        return false;
     }
 
-    private void moveTilesDown() {
+    private boolean moveTilesDown() {
 
-        System.out.println("Down");
+        Tile[][] gridBeforeChanges = createCopyOfTileArray(grid);
+
         for(int i = 3; i >= 0; i--) {
             for(int j = 3; j >= 0; j--) {
 
@@ -180,10 +201,16 @@ public class MoveScene extends Scene {
             }
         }
 
+        if(isGridsDifferent(gridBeforeChanges))
+            return true;
+
+        return false;
+
     }
 
-    private void moveTilesUp() {
-        System.out.println("Up");
+    private boolean moveTilesUp() {
+
+        Tile[][] gridBeforeChanges = createCopyOfTileArray(grid);
 
         for(int i = 0; i < 4; i++) {
             for(int j = 0; j < 4; j++) {
@@ -223,5 +250,32 @@ public class MoveScene extends Scene {
             }
         }
 
+        if(isGridsDifferent(gridBeforeChanges))
+            return true;
+
+        return false;
+    }
+
+    private boolean isGridsDifferent(Tile[][] gridBeforeChanges) {
+
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < 4; j++) {
+                if( !grid[i][j].equals(gridBeforeChanges[i][j]) )
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private Tile[][] createCopyOfTileArray(Tile[][] grid) {
+
+        Tile[][] tiles = new Tile[4][4];
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                tiles[i][j] = new Tile(i,j,grid[i][j].getValue());
+            }
+        }
+        return tiles;
     }
 }
